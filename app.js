@@ -267,3 +267,44 @@ async function deleteGuest(id) {
         alert("Erro ao deletar do servidor.");
     }
 }
+
+/*
+==================================================
+ATUALIZAÇÕES DO SISTEMA
+- Organização por famílias
+- Monitoramento de confirmados
+- Cadastro em grupo
+- Envio individual/família preparado
+==================================================
+*/
+
+async function addGuestFromAdmin() {
+
+    const groupName = document.getElementById('admin-group-name').value.trim();
+    const guestName = document.getElementById('admin-guest-name').value.trim();
+
+    if(!groupName || !guestName) {
+        return alert("Preencha os campos.");
+    }
+
+    const guests = guestName.split(',').map(name => name.trim());
+
+    const payload = guests.map(name => ({
+        nome_grupo: groupName,
+        nome_convidado: name,
+        status_presenca: 'Pendente'
+    }));
+
+    const { error } = await supabase
+        .from('convidados')
+        .insert(payload);
+
+    if(error) {
+        console.error(error);
+        return alert("Erro ao adicionar convidados.");
+    }
+
+    alert("Família/grupo adicionado com sucesso.");
+
+    loadAdminData();
+}
