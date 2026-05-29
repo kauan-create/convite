@@ -25,6 +25,9 @@ const countdownInterval = setInterval(() => {
     if (difference < 0) {
         clearInterval(countdownInterval);
         document.getElementById("days").innerText = "00";
+        document.getElementById("hours").innerText = "00";
+        document.getElementById("minutes").innerText = "00";
+        document.getElementById("seconds").innerText = "00";
         return;
     }
 
@@ -40,7 +43,7 @@ const countdownInterval = setInterval(() => {
 }, 1000);
 
 
-// --- LÓGICA DO CONVIDADO (BUSCA & CONFIRMAÇÃO) ---
+// --- LÓGICA DO CONVIDADO (BUSCA, CONFIRMAÇÃO & CHECKOUT) ---
 let currentGroupGuests = [];
 
 async function searchGroup() {
@@ -95,12 +98,20 @@ function renderGroupSelection() {
 
     document.getElementById('step-search').classList.add('hidden');
     document.getElementById('step-confirm').classList.remove('hidden');
+    document.getElementById('step-checkout').classList.add('hidden');
 }
 
 async function submitRSVP() {
+    const confirmedList = [];
+
     for (let i = 0; i < currentGroupGuests.length; i++) {
         const guest = currentGroupGuests[i];
         const selectedStatus = document.querySelector(`input[name="status-${i}"]:checked`).value;
+
+        // Guarda os nomes de quem realizou o checkout positivo para o resumo
+        if (selectedStatus === 'Confirmado') {
+            confirmedList.push(guest.nome_convidado);
+        }
 
         await supabase
             .from('convidados')
@@ -108,14 +119,33 @@ async function submitRSVP() {
             .eq('id', guest.id);
     }
 
-    alert("Presença respondida com sucesso! Obrigado! 🎉");
-    resetFlow();
+    // Exibe a tela de Checkout de Sucesso
+    showCheckoutSuccess(confirmedList);
+}
+
+function showCheckoutSuccess(confirmedMembers) {
+    document.getElementById('step-confirm').classList.add('hidden');
+    const checkoutStep = document.getElementById('step-checkout');
+    const summaryList = document.getElementById('checkout-summary-list');
+    
+    summaryList.innerHTML = '';
+
+    if (confirmedMembers.length === 0) {
+        summaryList.innerHTML = `<li class="text-red-600 list-none">Nenhum membro do grupo foi confirmado.</li>`;
+    } else {
+        confirmedMembers.forEach(name => {
+            summaryList.innerHTML += `<li>${name}</li>`;
+        });
+    }
+
+    checkoutStep.classList.remove('hidden');
 }
 
 function resetFlow() {
     document.getElementById('search-name').value = '';
     document.getElementById('step-search').classList.remove('hidden');
     document.getElementById('step-confirm').classList.add('hidden');
+    document.getElementById('step-checkout').classList.add('hidden');
 }
 
 
@@ -131,22 +161,32 @@ async function loadAdminData() {
     const tbody = document.getElementById('admin-table-body');
     tbody.innerHTML = '';
 
+    let totalGuests = data.length;
+    let confirmedCount = 0;
+
     data.forEach(guest => {
         let badgeColor = "bg-gray-100 text-gray-600";
-        if(guest.status_presenca === 'Confirmado') badgeColor = "bg-green-100 text-green-700 font-bold";
+        if(guest.status_presenca === 'Confirmado') {
+            badgeColor = "bg-green-100 text-green-700 font-bold";
+            confirmedCount++;
+        }
         if(guest.status_presenca === 'Ausente') badgeColor = "bg-red-100 text-red-700";
 
         tbody.innerHTML += `
             <tr class="border-b border-gray-100 hover:bg-gray-50">
                 <td class="p-3 font-medium">${guest.nome_grupo}</td>
                 <td class="p-3">${guest.nome_convidado}</td>
-                <td class="p-3"><span class="px-2 py-1 text-xs rounded-full ${badgeColor}">${guest.status_presenca || 'Pendente'}</span></td>
-                <td class="p-3">
-                    <button onclick="deleteGuest(${guest.id})" class="text-xs text-red-500 hover:underline">Excluir</button>
+                <td class="p-3 text-center"><span class="px-2 py-1 text-xs rounded-full ${badgeColor}">${guest.status_presenca || 'Pendente'}</span></td>
+                <td class="p-3 text-center">
+                    <button onclick="deleteGuest('${guest.id}')" class="text-xs text-red-500 hover:underline">Excluir</button>
                 </td>
             </tr>
         `;
     });
+
+    // Atualiza os contadores numéricos na parte superior do painel admin
+    document.getElementById('admin-counter-confirmed').innerText = confirmedCount;
+    document.getElementById('admin-counter-total').innerText = totalGuests;
 }
 
 async function addGuestFromAdmin() {
@@ -175,5 +215,9 @@ async function deleteGuest(id) {
         .delete()
         .eq('id', id);
 
-    if(!error) loadAdminData();
+    if(!error) {
+        loadAdminData();
+    } else {
+        alert("Erro ao remover o convidado.");
+    }
 }
