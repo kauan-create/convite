@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mickey Safari - Confirmação de Presença</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+        body { font-family: 'Quicksand', sans-serif; }
+        .font-title { font-family: 'Fredoka One', cursive; }
+    </style>
+</head>
+<body class="bg-[#F4EBE1] text-[#4A3B32] min-h-screen pb-10">
+
+    <div class="bg-[#7D6B58] p-2 flex justify-center gap-4 text-white text-sm shadow-md">
+        <button onclick="switchTab('guest-view')" class="hover:underline font-bold">✨ Tela do Convidado</button>
+        <button onclick="switchTab('admin-view')" class="hover:underline font-bold">🔒 Painel Admin</button>
+    </div>
+
+    <main id="guest-view" class="max-w-md mx-auto mx-4 mt-6 p-6 bg-white rounded-3xl shadow-xl border-4 border-[#556B2F]">
+        <div class="text-center mb-6">
+            <div class="text-4xl mb-2">🌿 🏰 🐾</div>
+            <h1 class="font-title text-3xl text-[#556B2F] tracking-wide">Mickey Safari</h1>
+            <p class="text-[#8B5A2B] font-bold mt-1">Confirme sua presença nesta aventura!</p>
+        </div>
+
+        <div class="bg-[#FDFBF7] border-2 border-dashed border-[#CD853F] rounded-2xl p-4 text-center mb-6">
+            <h3 class="text-xs uppercase tracking-wider text-[#8B5A2B] font-bold mb-2">Nossa aventura começa em:</h3>
+            <div class="grid grid-cols-4 gap-2 text-[#556B2F]">
+                <div class="bg-[#E8F0FE] p-2 rounded-lg"><span id="days" class="font-title text-xl block">00</span><span class="text-[10px] uppercase">Dias</span></div>
+                <div class="bg-[#E8F0FE] p-2 rounded-lg"><span id="hours" class="font-title text-xl block">00</span><span class="text-[10px] uppercase">Horas</span></div>
+                <div class="bg-[#E8F0FE] p-2 rounded-lg"><span id="minutes" class="font-title text-xl block">00</span><span class="text-[10px] uppercase">Min</span></div>
+                <div class="bg-[#E8F0FE] p-2 rounded-lg"><span id="seconds" class="font-title text-xl block">00</span><span class="text-[10px] uppercase">Seg</span></div>
+            </div>
+        </div>
+
+        <div id="rsvp-flow">
+            <div id="step-search">
+                <label class="block text-sm font-bold mb-2 text-[#4A3B32]">Digite seu nome para buscar seu convite:</label>
+                <input type="text" id="search-name" placeholder="Ex: João Silva" class="w-full p-3 rounded-xl border-2 border-[#D2B48C] focus:outline-none focus:border-[#556B2F] mb-4">
+                <button onclick="searchGroup()" class="w-full bg-[#556B2F] hover:bg-[#3B4D20] text-white font-bold p-3 rounded-xl shadow-md transition-all">Buscar Convite 🔎</button>
+            </div>
+
+            <div id="step-confirm" class="hidden">
+                <h3 class="font-bold text-lg text-[#8B5A2B] mb-3">Encontramos seu grupo! Envie a resposta:</h3>
+                <div id="group-members-list" class="space-y-3 mb-4">
+                    </div>
+                <button onclick="submitRSVP()" class="w-full bg-[#CD853F] hover:bg-[#B36F2D] text-white font-title text-lg p-3 rounded-xl shadow-md transition-all">Confirmar Presença 📝</button>
+                <button onclick="resetFlow()" class="w-full text-sm text-gray-500 mt-3 hover:underline">Voltar</button>
+            </div>
+        </div>
+    </main>
+
+    <main id="admin-view" class="max-w-4xl mx-auto mx-4 mt-6 p-6 bg-white rounded-3xl shadow-xl border-4 border-[#7D6B58] hidden">
+        <h2 class="font-title text-2xl text-[#7D6B58] mb-6 flex justify-between items-center">
+            <span>🔒 Painel de Controle (Admin)</span>
+            <button onclick="loadAdminData()" class="text-sm bg-gray-100 px-3 py-1 rounded-lg border text-black">🔄 Atualizar Lista</button>
+        </h2>
+
+        <div class="bg-[#FDFBF7] p-4 rounded-2xl border border-[#D2B48C] mb-8">
+            <h3 class="font-bold text-[#8B5A2B] mb-3">➕ Adicionar Novo Grupo/Convidado</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <input type="text" id="admin-group-name" placeholder="Nome do Grupo (Ex: Família Silva)" class="p-2 rounded-lg border border-[#D2B48C]">
+                <input type="text" id="admin-guest-name" placeholder="Nome do Convidado" class="p-2 rounded-lg border border-[#D2B48C]">
+                <button onclick="addGuestFromAdmin()" class="bg-[#556B2F] hover:bg-[#3B4D20] text-white font-bold p-2 rounded-lg">Adicionar Convidado</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">*Para criar um grupo com várias pessoas, adicione cada convidado repetindo exatamente o mesmo "Nome do Grupo".</p>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-inner">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#7D6B58] text-white text-sm">
+                        <th class="p-3">Grupo</th>
+                        <th class="p-3">Convidado</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-table-body" class="text-sm">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
