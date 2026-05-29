@@ -3,140 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mickey Safari - Confirmação de Presença</title>
+    <title>Safari do Mateus - Confirmação de Presença</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Quicksand:wght@600;700&display=swap');
         body { font-family: 'Quicksand', sans-serif; }
         .font-title { font-family: 'Fredoka', cursive; }
-        .safari-gradient {
-            background: linear-gradient(135deg, #F9F5F0 0%, #EFE5D8 100%);
+        
+        /* Cores fiéis à imagem do Safari do Mateus */
+        .bg-safari-sunset {
+            background: linear-gradient(180deg, #E3A857 0%, #C87A3E 100%);
+        }
+        .bg-safari-card {
+            background-color: #EAD7C3;
         }
     </style>
 </head>
-<body class="bg-[#F3E9DC] text-[#432818] min-h-screen pb-12 antialiased">
+<body class="bg-[#2B2D1F] text-[#432818] min-h-screen pb-12 antialiased">
 
-    <nav class="bg-[#5C6746] p-3 flex justify-between items-center px-6 text-white shadow-lg border-b-4 border-[#997B66]">
+    <nav class="bg-[#4A4E39] p-3 flex justify-between items-center px-6 text-white shadow-lg border-b-4 border-[#A3704C]">
         <div class="flex items-center gap-2">
-            <span class="text-xl">🌿</span>
-            <span class="font-title font-bold tracking-wider text-[#F7D070]">MICKEY SAFARI</span>
+            <span class="text-xl">🌴</span>
+            <span class="font-title font-bold tracking-wider text-[#F7D070]">SAFARI DO MATEUS</span>
         </div>
         <div class="flex gap-4 text-xs sm:text-sm">
-            <button onclick="switchTab('guest-view')" class="bg-[#7F8C5E] hover:bg-[#90A06B] font-bold py-1.5 px-3 rounded-xl transition-all shadow-sm">✨ Convidado</button>
-            <button onclick="switchTab('admin-view')" class="bg-[#997B66] hover:bg-[#B08E74] font-bold py-1.5 px-3 rounded-xl transition-all shadow-sm">🔒 Admin</button>
+            <button onclick="switchTab('guest-view')" class="bg-[#6B705C] hover:bg-[#A3B18A] text-white font-bold py-1.5 px-3 rounded-xl transition-all shadow-sm">✨ Convidado</button>
+            <button onclick="switchTab('admin-view')" class="bg-[#A3704C] hover:bg-[#BC8A5F] text-white font-bold py-1.5 px-3 rounded-xl transition-all shadow-sm">🔒 Admin</button>
         </div>
     </nav>
 
-    <main id="guest-view" class="max-w-md mx-auto mx-4 mt-8 transition-all duration-300">
-        <div class="safari-gradient rounded-[2.5rem] shadow-2xl border-8 border-[#5C6746] overflow-hidden p-6 relative">
-            
-            <div class="absolute top-4 right-6 text-gray-400 opacity-20 text-3xl select-none">⚫️🐭⚫️</div>
-            
-            <div class="text-center mb-6 pt-4">
-                <div class="inline-block bg-[#F7D070] text-[#432818] text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full shadow-sm mb-3">
-                    🦒 Uma Nova Aventura Vai Começar! 🐾
-                </div>
-                <h1 class="font-title text-4xl text-[#3A4524] font-bold tracking-wide leading-tight">Mickey Safari</h1>
-                <p class="text-[#997B66] text-sm font-semibold tracking-wide mt-1">Confirme sua presença preenchendo os dados abaixo</p>
-                <div class="w-16 h-1 bg-[#997B66] mx-auto mt-3 rounded-full"></div>
-            </div>
-
-            <div class="bg-white/80 backdrop-blur-sm border-2 border-dashed border-[#B08E74] rounded-2xl p-4 text-center mb-6 shadow-inner">
-                <h3 class="text-[11px] uppercase tracking-widest text-[#997B66] font-bold mb-3 flex justify-center items-center gap-1">
-                    ⏱️ Contagem regressiva para a expedição
-                </h3>
-                <div class="grid grid-cols-4 gap-2 text-[#5C6746]">
-                    <div class="bg-[#F5F2EB] p-2 rounded-xl border border-gray-200/60 shadow-sm">
-                        <span id="days" class="font-title font-bold text-2xl block text-[#3A4524]">00</span>
-                        <span class="text-[9px] uppercase tracking-wider font-bold text-gray-500">Dias</span>
-                    </div>
-                    <div class="bg-[#F5F2EB] p-2 rounded-xl border border-gray-200/60 shadow-sm">
-                        <span id="hours" class="font-title font-bold text-2xl block text-[#3A4524]">00</span>
-                        <span class="text-[9px] uppercase tracking-wider font-bold text-gray-500">Horas</span>
-                    </div>
-                    <div class="bg-[#F5F2EB] p-2 rounded-xl border border-gray-200/60 shadow-sm">
-                        <span id="minutes" class="font-title font-bold text-2xl block text-[#3A4524]">00</span>
-                        <span class="text-[9px] uppercase tracking-wider font-bold text-gray-500">Min</span>
-                    </div>
-                    <div class="bg-[#F5F2EB] p-2 rounded-xl border border-gray-200/60 shadow-sm">
-                        <span id="seconds" class="font-title font-bold text-2xl block text-[#5C6746] animate-pulse">00</span>
-                        <span class="text-[9px] uppercase tracking-wider font-bold text-gray-500">Seg</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="rsvp-flow" class="bg-white rounded-2xl p-5 shadow-md border border-[#EFE5D8]">
+    <div class="max-w-5xl mx-auto px-4 mt-8">
+        
+        <main id="guest-view" class="bg-[#555A3F] rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-[#3F4230] transition-all duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12">
                 
-                <div id="step-search">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Digite o seu primeiro nome ou sobrenome:</label>
-                    <div class="relative mb-4">
-                        <input type="text" id="search-name" placeholder="Ex: Silva ou João" class="w-full pl-4 pr-10 py-3.5 rounded-xl border-2 border-[#DDCBC0] focus:outline-none focus:border-[#5C6746] transition-colors font-medium">
-                        <span class="absolute right-3.5 top-3.5 text-lg">🔍</span>
+                <div class="lg:col-span-5 bg-safari-sunset p-8 flex flex-col justify-between items-center text-center min-h-[350px] relative">
+                    <div class="absolute top-4 left-4 text-black opacity-10 text-4xl select-none">⚫️\u200D🐭⚫️</div>
+                    
+                    <div class="mt-4">
+                        <span class="bg-black/20 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full shadow-sm">
+                            Convidado Especial: Mateus
+                        </span>
+                        <h1 class="font-title text-4xl sm:text-5xl text-[#2B1B10] font-bold tracking-wide mt-4 drop-shadow-sm">
+                            Safari do Mateus
+                        </h1>
                     </div>
-                    <button onclick="searchGroup()" class="w-full bg-[#5C6746] hover:bg-[#475035] text-white font-title font-bold tracking-wide p-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]">
-                        Buscar Meu Convite
-                    </button>
+
+                    <div class="my-6 text-8xl filter drop-shadow-lg">🤠🦁🦒</div>
+
+                    <div class="bg-black/10 px-4 py-2 rounded-xl text-xs font-bold text-[#3D1E03] uppercase tracking-wider">
+                        PROJETO EDITÁVEL 🛠️
+                    </div>
                 </div>
 
-                <div id="step-confirm" class="hidden">
-                    <div class="flex items-center gap-2 text-[#997B66] mb-3">
-                        <span>🗺️</span>
-                        <h3 class="font-bold text-sm uppercase tracking-wide">Selecionar integrantes do grupo:</h3>
-                    </div>
+                <div class="lg:col-span-7 bg-safari-card p-6 sm:p-8 flex flex-col justify-center">
                     
-                    <div id="group-members-list" class="space-y-2.5 mb-5 max-h-60 overflow-y-auto pr-1">
+                    <div class="text-center mb-6">
+                        <h2 class="font-title text-2xl uppercase tracking-wide text-[#3D2314]">Confirmation of Presence</h2>
+                        <p class="text-sm font-bold text-[#6E473B] mt-1">DATA DO EVENTO: 28/06/2026</p>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-2 text-center mb-6 max-w-md mx-auto w-full">
+                        <div class="bg-[#3D2314] text-[#EAD7C3] p-3 rounded-xl shadow-md">
+                            <span id="days" class="font-title font-bold text-2xl sm:text-3xl block">00</span>
+                            <span class="text-[9px] uppercase tracking-wider font-bold opacity-70">Dias</span>
                         </div>
-                    
-                    <button onclick="submitRSVP()" class="w-full bg-[#F7D070] hover:bg-[#E5BE5E] text-[#432818] font-title font-bold tracking-wide text-md p-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]">
-                        Confirmar Presença 🎉
-                    </button>
-                    <button onclick="resetFlow()" class="w-full text-xs text-gray-400 mt-4 hover:text-[#997B66] font-bold tracking-wide uppercase transition-colors">
-                        ← Voltar e Pesquisar Outro Nome
-                    </button>
+                        <div class="bg-[#3D2314] text-[#EAD7C3] p-3 rounded-xl shadow-md">
+                            <span id="hours" class="font-title font-bold text-2xl sm:text-3xl block">00</span>
+                            <span class="text-[9px] uppercase tracking-wider font-bold opacity-70">Horas</span>
+                        </div>
+                        <div class="bg-[#3D2314] text-[#EAD7C3] p-3 rounded-xl shadow-md">
+                            <span id="minutes" class="font-title font-bold text-2xl sm:text-3xl block">00</span>
+                            <span class="text-[9px] uppercase tracking-wider font-bold opacity-70">Min</span>
+                        </div>
+                        <div class="bg-[#3D2314] text-[#EAD7C3] p-3 rounded-xl shadow-md">
+                            <span id="seconds" class="font-title font-bold text-2xl sm:text-3xl block animate-pulse">00</span>
+                            <span class="text-[9px] uppercase tracking-wider font-bold opacity-70">Seg</span>
+                        </div>
+                    </div>
+
+                    <div id="rsvp-flow" class="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-[#D9C3B0] max-w-md mx-auto w-full">
+                        
+                        <div id="step-search">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-[#5C3A21] mb-2">
+                                Seu nome já está na lista? Digite abaixo para confirmar:
+                            </label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="search-name" placeholder="Digite seu nome..." class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-[#C87A3E] font-medium text-sm">
+                                <button onclick="searchGroup()" class="bg-[#4A4E39] hover:bg-[#333527] text-white font-title font-bold text-xs uppercase tracking-wider px-4 py-3 rounded-xl shadow transition-all whitespace-nowrap">
+                                    Buscar Meu Nome
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="step-confirm" class="hidden">
+                            <h3 class="font-bold text-sm text-[#3D2314] mb-3 flex items-center gap-1">
+                                🗺️ Encontramos sua expedição! Marque quem vai:
+                            </h3>
+                            <div id="group-members-list" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
+                                </div>
+                            <button onclick="submitRSVP()" class="w-full bg-[#C87A3E] hover:bg-[#A65F2B] text-white font-title font-bold tracking-wide py-3 rounded-xl shadow transition-all">
+                                Confirmar Presença 🎉
+                            </button>
+                            <button onclick="resetFlow()" class="w-full text-xs text-gray-500 mt-3 hover:underline text-center block font-semibold">
+                                ← Voltar para a busca
+                            </button>
+                        </div>
+
+                    </div>
+
                 </div>
-
             </div>
-        </div>
-    </main>
+        </main>
 
-    <main id="admin-view" class="max-w-4xl mx-auto mx-4 mt-8 hidden transition-all duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl border-4 border-[#997B66] p-6">
-            
+        <main id="admin-view" class="bg-white rounded-[2rem] shadow-2xl border-4 border-[#A3704C] p-6 hidden transition-all duration-300">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4">
                 <div>
-                    <h2 class="font-title text-2xl text-[#5C6746] font-bold flex items-center gap-2">
-                        <span>🔒 Painel de Controle</span>
+                    <h2 class="font-title text-2xl text-[#4A4E39] font-bold flex items-center gap-2">
+                        <span>🔒 Painel de Controle (Admin)</span>
                     </h2>
-                    <p class="text-xs text-gray-400 font-medium">Gerencie a lista de convidados e veja as estatísticas em tempo real</p>
+                    <p class="text-xs text-gray-400 font-medium">Gerenciamento exclusivo do administrador do programa</p>
                 </div>
-                <button onclick="loadAdminData()" class="w-full sm:w-auto text-xs bg-[#F5F2EB] hover:bg-gray-200 text-[#432818] font-bold px-4 py-2 rounded-xl border border-gray-300 transition-colors flex items-center justify-center gap-1 shadow-sm">
-                    🔄 Atualizar Painel
+                <button onclick="loadAdminData()" class="w-full sm:w-auto text-xs bg-gray-100 hover:bg-gray-200 text-black font-bold px-4 py-2 rounded-xl border transition-colors shadow-sm">
+                    🔄 Atualizar Lista
                 </button>
             </div>
 
-            <div class="bg-[#FBF9F6] p-5 rounded-2xl border-2 border-dashed border-[#DDCBC0] mb-6">
-                <h3 class="font-title font-bold text-[#997B66] text-sm uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <span>➕</span> Cadastrar Novo Convidado / Grupo
+            <div class="bg-[#FDFBF9] p-5 rounded-2xl border-2 border-dashed border-[#D9C3B0] mb-6">
+                <h3 class="font-title font-bold text-[#A3704C] text-sm uppercase tracking-wider mb-3">
+                    ✍️ Inserir Convidado ou Grupo Manualmente
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <input type="text" id="admin-group-name" placeholder="Nome do Grupo (Ex: Família Silva)" class="p-3 text-sm rounded-xl border border-gray-300 focus:outline-none focus:border-[#5C6746]">
-                    <input type="text" id="admin-guest-name" placeholder="Nome do Convidado" class="p-3 text-sm rounded-xl border border-gray-300 focus:outline-none focus:border-[#5C6746]">
-                    <button onclick="addGuestFromAdmin()" class="bg-[#5C6746] hover:bg-[#475035] text-white text-sm font-bold p-3 rounded-xl shadow-md transition-all">
-                        Inserir na Lista
+                    <input type="text" id="admin-group-name" placeholder="Nome do Grupo (Ex: Família Silva)" class="p-3 text-sm rounded-xl border border-gray-300 focus:outline-none focus:border-[#4A4E39]">
+                    <input type="text" id="admin-guest-name" placeholder="Nome do Convidado" class="p-3 text-sm rounded-xl border border-gray-300 focus:outline-none focus:border-[#4A4E39]">
+                    <button onclick="addGuestFromAdmin()" class="bg-[#4A4E39] hover:bg-[#333527] text-white text-sm font-bold p-3 rounded-xl shadow transition-all">
+                        Salvar Convidado
                     </button>
                 </div>
-                <span class="text-[11px] text-gray-400 block mt-2">💡 <b>Dica de Grupo:</b> Para colocar várias pessoas juntas, digite exatamente o mesmo "Nome do Grupo" para cada um deles.</span>
             </div>
 
-            <div class="overflow-hidden bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <div class="overflow-hidden border border-gray-200 rounded-2xl shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-[#5C6746] text-white text-xs uppercase tracking-wider font-bold">
+                            <tr class="bg-[#4A4E39] text-white text-xs uppercase tracking-wider font-bold">
                                 <th class="p-3.5 pl-5">Grupo / Família</th>
                                 <th class="p-3.5">Nome do Convidado</th>
-                                <th class="p-3.5 text-center">Status de Resposta</th>
+                                <th class="p-3.5 text-center">Status</th>
                                 <th class="p-3.5 text-center">Ações</th>
                             </tr>
                         </thead>
@@ -145,9 +159,9 @@
                     </table>
                 </div>
             </div>
+        </main>
 
-        </div>
-    </main>
+    </div>
 
     <script src="config.js"></script>
     <script src="app.js"></script>
